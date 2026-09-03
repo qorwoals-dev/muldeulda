@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ChakTone — 퍼스널 컬러 진단서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --canvas: #F2EEE7;
+    --canvas-dim: #EAE4D8;
+    --ink: #211D1A;
+    --ink-soft: #5B534B;
+    --line: #DDD5C8;
+    --accent: #6B3A4B;
+    --gold: #B08D4F;
+    --white: #FCFBF9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: 'Manrope', sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 28px 16px 60px;
+  }
+  .page { width: 100%; max-width: 420px; }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+  }
+  h1.heading {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    margin: 0 0 20px;
+  }
+  #card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 18px;
+  }
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  .issued {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-soft);
+  }
+  .label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: var(--ink-soft);
+  }
+  .label.gold { color: var(--gold); }
+  .season-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 26px;
+    margin: 4px 0 10px;
+  }
+  .desc {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 0 20px;
+  }
+  .section { margin-bottom: 16px; }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 8px 12px 8px 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  .chip .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+  }
+  .metal-text {
+    font-size: 12.5px;
+    font-weight: 700;
+    margin-top: 8px;
+  }
+  .avoid-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .avoid-swatch {
+    flex: 1;
+    height: 26px;
+    border-radius: 4px;
+    opacity: 0.45;
+  }
+  .actions { margin-top: 24px; }
+  button#downloadBtn {
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent);
+    color: var(--white);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  button#downloadBtn:disabled { opacity: 0.6; }
+  .hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+  }
+  .missing {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-soft);
+  }
+  .twin-card {
+    background: var(--canvas-dim);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 20px;
+  }
+  .twin-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: var(--gold);
+    margin: 0 0 10px;
+  }
+  .twin-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+  .twin-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .twin-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 21px;
+  }
+  .twin-score {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 21px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .twin-bar {
+    height: 6px;
+    border-radius: 4px;
+    background: var(--line);
+    margin: 12px 0 10px;
+    overflow: hidden;
+  }
+  .twin-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; }
+  .twin-note { font-size: 11.5px; line-height: 1.6; color: var(--ink-soft); margin: 0; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <p class="eyebrow" id="eyebrowText">진단서</p>
+    <h1 class="heading">나의 퍼스널 컬러 진단서</h1>
+    <div id="content"></div>
+  </div>
+
+<script>
+  const PALETTES = {
+    spring_warm: {
+      title: '봄 웜톤',
+      description: '화사하고 생기 있는 색이 피부를 밝고 화사하게 보이게 해요. 따뜻한 코랄과 밝은 옐로 계열이 특히 잘 어울려요.',
+      bestColors: [['코랄', '#FF8B66'], ['피치', '#FFC9A8'], ['라이트 옐로', '#F3D26B'], ['민트', '#8FCBA6']],
+      avoidColors: ['#3B4C9E', '#4A4A52', '#8A6BB0'],
+      hairColors: [['허니 브라운', '#B98750'], ['라이트 브라운', '#C79A6B']],
+      lipColors: [['코랄 립', '#E8785A'], ['피치 립', '#F0A67E']],
+      blushColors: [['코랄 블러셔', '#FF9A76'], ['피치 블러셔', '#FFBFA0']],
+      eyeshadowColors: [['골드 브론즈', '#D9A441'], ['피치 브라운', '#C79A6B']],
+      metal: '골드 액세서리',
+    },
+    summer_cool: {
+      title: '여름 쿨톤',
+      description: '부드럽고 차분한 파스텔 톤이 잘 어울려요. 뿌옇고 은은한 쿨 컬러가 피부를 맑아 보이게 해요.',
+      bestColors: [['더스티 블루', '#93A8C9'], ['라벤더', '#C9B8D8'], ['로즈 핑크', '#DB9CAE'], ['소프트 그레이', '#B7B4B0']],
+      avoidColors: ['#E0A421', '#B5723A', '#8C3B1B'],
+      hairColors: [['애쉬 브라운', '#8D7A70'], ['그레이시 브라운', '#9C8E85']],
+      lipColors: [['로즈 핑크 립', '#C97E92'], ['모브 립', '#B98CA0']],
+      blushColors: [['로즈 블러셔', '#D8A8B5'], ['라벤더 블러셔', '#C9B8D8']],
+      eyeshadowColors: [['그레이 라벤더', '#B7A8C0'], ['로즈 브라운', '#A98A90']],
+      metal: '실버 액세서리',
+    },
+    autumn_warm: {
+      title: '가을 웜톤',
+      description: '차분하고 깊이감 있는 색이 피부톤을 환하게 밝혀줘요. 골드빛이 도는 웜한 색상이 특히 잘 어울려요.',
+      bestColors: [['테라코타', '#A6693A'], ['모스그린', '#7C7A4A'], ['머스터드', '#D9A441'], ['캐멀', '#C98B4B']],
+      avoidColors: ['#3B4C9E', '#B8235B', '#93A8C9'],
+      hairColors: [['다크 브라운', '#4A362A'], ['초코 브라운', '#5C4331']],
+      lipColors: [['테라코타 립', '#B05A34'], ['브릭 레드 립', '#9C4A2E']],
+      blushColors: [['브릭 블러셔', '#B26A4A'], ['테라코타 블러셔', '#C17847']],
+      eyeshadowColors: [['카키 브론즈', '#7C7A4A'], ['캐멀 브라운', '#A6693A']],
+      metal: '골드 액세서리',
+    },
+    winter_cool: {
+      title: '겨울 쿨톤',
+      description: '선명하고 또렷한 색이 피부와 또렷한 대비를 이뤄요. 깊은 사파이어와 비비드한 마젠타가 잘 어울려요.',
+      bestColors: [['사파이어', '#3B4C9E'], ['마젠타', '#B8235B'], ['퓨어 화이트', '#F7F5F0'], ['차콜', '#2B2A2E']],
+      avoidColors: ['#D9A441', '#C98B4B', '#FFC9A8'],
+      hairColors: [['블랙', '#1E1B1D'], ['애쉬 블랙', '#302C31']],
+      lipColors: [['버건디 립', '#7A2338'], ['푸시아 립', '#C1215F']],
+      blushColors: [['푸시아 블러셔', '#C1527A'], ['로즈 블러셔', '#B8235B']],
+      eyeshadowColors: [['차콜 그레이', '#2B2A2E'], ['플럼 퍼플', '#6B3A4B']],
+      metal: '실버 액세서리',
+    },
+  };
+
+  function formatDate(raw) {
+    if (raw && /^\d{8}$/.test(raw)) {
+      return `${raw.slice(0, 4)}.${raw.slice(4, 6)}.${raw.slice(6, 8)}`;
+    }
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${now.getFullYear()}.${pad(now.getMonth() + 1)}.${pad(now.getDate())}`;
+  }
+
+  function chipHtml([name, color]) {
+    return `<span class="chip"><span class="dot" style="background:${color}"></span>${name}</span>`;
+  }
+
+  function sectionHtml(label, swatches) {
+    return `
+      <div class="section">
+        <p class="label">${label}</p>
+        <div class="chips">${swatches.map(chipHtml).join('')}</div>
+      </div>`;
+  }
+
+  function twinCardHtml(celeb, score) {
+    const pct = score && /^\d+$/.test(score) ? Math.min(100, Math.max(0, parseInt(score, 10))) : 90;
+    return `
+      <div class="twin-card">
+        <p class="twin-eyebrow"><span class="twin-dot"></span>COLOR TWIN</p>
+        <div class="twin-row">
+          <span class="twin-name">${celeb}</span>
+          <span class="twin-score">${pct}%</span>
+        </div>
+        <div class="twin-bar"><div class="twin-bar-fill" style="width:${pct}%"></div></div>
+        <p class="twin-note">${celeb} 님과 같은 컬러 타입이에요. 얼굴이 닮았다는 뜻이 아니라 어울리는 색의 결이 같다는 재미로 보는 지수예요.</p>
+      </div>
+    `;
+  }
+
+  function render() {
+    const params = new URLSearchParams(location.search);
+    const type = params.get('type');
+    const palette = PALETTES[type];
+    const content = document.getElementById('content');
+
+    if (!palette) {
+      content.innerHTML = `<div class="missing">진단서 링크가 올바르지 않아요.<br/>ChakTone 앱에서 다시 발급받아주세요.</div>`;
+      return;
+    }
+
+    const issuedOn = formatDate(params.get('date'));
+    const celeb = params.get('celeb');
+    const score = params.get('score');
+
+    content.innerHTML = `
+      <div id="captureArea">
+        <div id="card">
+          <div class="card-top">
+            <span class="brand">ChakTone</span>
+            <span class="issued">${issuedOn}</span>
+          </div>
+          <p class="label gold">PERSONAL COLOR</p>
+          <h2 class="season-title">${palette.title}</h2>
+          <p class="desc">${palette.description}</p>
+          ${sectionHtml('베스트 컬러', palette.bestColors)}
+          ${sectionHtml('추천 헤어컬러', palette.hairColors)}
+          ${sectionHtml('추천 립컬러', palette.lipColors)}
+          ${sectionHtml('추천 블러셔', palette.blushColors)}
+          ${sectionHtml('추천 아이섀도우', palette.eyeshadowColors)}
+          <div class="section">
+            <p class="label">추천 액세서리</p>
+            <p class="metal-text">${palette.metal}</p>
+          </div>
+          <div class="section" style="margin-bottom:0">
+            <p class="label">피해야 할 컬러</p>
+            <div class="avoid-row">
+              ${palette.avoidColors.map((c) => `<span class="avoid-swatch" style="background:${c}"></span>`).join('')}
+            </div>
+          </div>
+        </div>
+        ${celeb ? twinCardHtml(celeb, score) : ''}
+      </div>
+      <div class="actions">
+        <button id="downloadBtn">진단서 이미지 다운로드</button>
+        <p class="hint">버튼을 누르면 이 진단서가 이미지로 저장돼요</p>
+      </div>
+    `;
+
+    document.getElementById('downloadBtn').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      btn.textContent = '이미지 만드는 중...';
+      try {
+        const canvas = await html2canvas(document.getElementById('captureArea'), { scale: 3, backgroundColor: '#F2EEE7' });
+        const link = document.createElement('a');
+        link.download = `muldeulda_${type}_${issuedOn.replace(/\./g, '')}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '진단서 이미지 다운로드';
+      }
+    });
+  }
+
+  render();
+</script>
+</body>
+</html>
